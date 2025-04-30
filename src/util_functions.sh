@@ -228,6 +228,7 @@ function patch_ota() {
     fi
 
     # Python command to run the patch script
+    sed -i -e 's/vendor_boot/boot/g' ${my_avbroot_setup}/patch.py
     python ${my_avbroot_setup}/patch.py "${args[@]}"
   fi
 
