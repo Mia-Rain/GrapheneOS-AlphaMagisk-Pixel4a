@@ -4,7 +4,7 @@ source src/declarations.sh
 
 # Fetch the latest version of GrapheneOS and Magisk and sets up the OTA URL
 function get_latest_version() {
-  local latest_grapheneos_version=$(curl -sL "${GRAPHENEOS[OTA_BASE_URL]}/${DEVICE_NAME}-${GRAPHENEOS[UPDATE_CHANNEL]}" | sed 's/ .*//')
+  local latest_grapheneos_version=2025012701
   local latest_magisk_version=29001
   # magisk alpha has no public repo so
 
