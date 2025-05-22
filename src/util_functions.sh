@@ -63,7 +63,7 @@ function check_and_download_dependencies() {
     RETRY_COUNT=0 # Reset retry count for magisk
     while true; do
       # Magisk is an exception as it is an APK and hecne we do the get call directly and verif its existence
-      get "magisk" "${MAGISK[URL]}/releases/download/canary-${VERSION[MAGISK]}/app-release.apk"
+      get "magisk" "${MAGISK[URL]}"
       verify_downloads "magisk"
 
       [[ "${ADDITIONALS[RETRY]}" == "true" ]] && [[ "${RETRY}" == "true" ]] || break
@@ -205,24 +205,22 @@ function patch_ota() {
     args+=("--pass-ota-env-var" "PASSPHRASE_OTA")
 
     # Modules
-    args+=("--module-custota" "${WORKDIR}/modules/custota.zip")
     args+=("--module-msd" "${WORKDIR}/modules/msd.zip")
     args+=("--module-bcr" "${WORKDIR}/modules/bcr.zip")
     args+=("--module-oemunlockonboot" "${WORKDIR}/modules/oemunlockonboot.zip")
-    args+=("--module-alterinstaller" "${WORKDIR}/modules/alterinstaller.zip")
 
     # Module signatures
-    args+=("--module-custota-sig" "${WORKDIR}/signatures/custota.zip.sig")
     args+=("--module-msd-sig" "${WORKDIR}/signatures/msd.zip.sig")
     args+=("--module-bcr-sig" "${WORKDIR}/signatures/bcr.zip.sig")
     args+=("--module-oemunlockonboot-sig" "${WORKDIR}/signatures/oemunlockonboot.zip.sig")
-    args+=("--module-alterinstaller-sig" "${WORKDIR}/signatures/alterinstaller.zip.sig")
+    ## alterinstall and custota have been removed as sunfish no longer receives updates
 
     # Add support for Magisk if root config is enabled
     if [[ "${ADDITIONALS[ROOT]}" == 'true' ]]; then
       echo -e "Magisk is enabled. Modifying the setup script...\n"
       args+=("--patch-arg=--magisk" "--patch-arg" "${magisk_path}")
       args+=("--patch-arg=--magisk-preinit-device" "--patch-arg" "${MAGISK[PREINIT]}")
+      args+=("--patch-arg=--ignore-magisk-warnings")
     else
       echo -e "Magisk is not enabled. Skipping...\n"
     fi

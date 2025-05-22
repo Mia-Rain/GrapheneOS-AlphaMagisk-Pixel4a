@@ -1,8 +1,8 @@
-# PixeneOS (GrapheneOS++)
+# GrapheneOS-AlphaMagisk-Pixel4a (GrapheneOS++)
 
 ## Description
 
-PixeneOS is a `shell` script designed to patch GrapheneOS OTA (Over The Air) images with custom modules, providing additional features. This tool relies heavily on upstream projects for its functionality.
+GrapheneOS-AlphaMagisk-Pixel4a is a `shell` script designed to patch GrapheneOS OTA (Over The Air) images with custom modules, providing additional features. This tool relies heavily on upstream projects for its functionality.
 
 ## Features
 
@@ -44,25 +44,19 @@ To use this project, you need the following (most dependencies will be handled b
   - `tomlkit` (Python dependency)
   - `pydantic` (Python dependency)
 
-## Working
-
-This repository acts as a server.
-
-1. [Release.yml](.github/workflows/release.yml) checks if a build already exists. If only the `rootless` flavor exists and the user opts for the `magisk` flavor, it builds it, and vice versa. If both flavors exist for a specific version and device, it skips the build.
-2. The workflow calls the build script, which downloads all the [requirements](#requirements) and patches the OTA by adding your signing key and installing the additional packages mentioned in the [features section](#features).
-3. The patched OTA is released and available in the [releases section](https://github.com/pixincreate/PixeneOS/releases).
-4. The server branch is updated based on the selected flavor (`rootless` is the default).
+## Patch
+The patched OTA is released and available in the [releases section](https://github.com/Mia-Rain/GrapheneOS-AlphaMagisk-Pixel4a/releases).
 
 ## Usage
 
 ### Getting Started
 
-Reading the [AVBRoot docs](https://github.com/chenxiaolong/AVBRoot) is essential before proceeding with PixeneOS.
+Reading the [AVBRoot docs](https://github.com/chenxiaolong/AVBRoot) is essential before proceeding with GrapheneOS-AlphaMagisk-Pixel4a.
 
-1. Ensure the device has an unpatched version of GrapheneOS installed. The version must match the one from PixeneOS. It is important to make sure that the version installed matches the version on PixeneOS
+1. Ensure the device has an unpatched version of GrapheneOS installed. The version must match the one from GrapheneOS-AlphaMagisk-Pixel4a. It is important to make sure that the version installed matches the version on GrapheneOS-AlphaMagisk-Pixel4a
 2. Start with a version before the latest to ensure OTA functionality.
 
-> [!IMPORTANT] > `Factory image` and `OTA image` are different. AVBRoot is meant to deal with **OTA images**. So does PixeneOS.
+> [!IMPORTANT] > `Factory image` and `OTA image` are different. AVBRoot is meant to deal with **OTA images**. So does GrapheneOS-AlphaMagisk-Pixel4a.
 
 ### Detailed Instructions
 
@@ -72,7 +66,7 @@ It is easier to use the web installer to flash GrapheneOS. However, it is recomm
 
 - Use the [web installer](https://grapheneos.org/install/web) to install GrapheneOS
 - Once installed, **do not** re-lock the bootloader by clicking `Lock bootloader` under the `Locking the bootloader` section
-- Proceed to the [patching section](#patching-grapheneos-cooking-pixeneos)
+- Proceed to the [patching section](#patching)
 
 #### Manual Install
 
@@ -97,7 +91,7 @@ It is easier to use the web installer to flash GrapheneOS. However, it is recomm
 
 4. Proceed to the [patching section](#patching-grapheneos-cooking-pixeneos)
 
-#### Patching GrapheneOS (cooking PixeneOS)
+#### Patching
 
 1. Download the [OTA from the releases](https://github.com/pixincreate/PixeneOS/releases). Ensure the version matches the installed version.
 
@@ -182,13 +176,10 @@ Rooting, from security point of view is **not** recommended. But that should not
 
 The version of [Magisk](https://github.com/topjohnwu/Magisk) provided by Topjohnwu does not hold good with GrapheneOS as the developers of Magisk are hostile with GrapheneOS developers and its users. See [7606](https://github.com/topjohnwu/Magisk/pull/7606).
 
-The fork of [Magisk](https://github.com/pixincreate/Magisk) that is maintained by @pixincreate does overcome of the limitations by making root access work on GrapheneOS while allowing Zygisk to work. It of course with its own limitations set up by developers who develop root hiding solutions which [prevents](https://github.com/pixincreate/Magisk/issues/1) the fork from supporting modules like Shamiko.
+Other forks of Magisk like [pixincreate/Magisk](https://github.com/pixincreate/Magisk), [1q23lyc45/KitsuneMagisk](https://github.com/1q23lyc45/KitsuneMagisk) & [Magisk Alpha](https://t.me/magiskalpha) do exist however, each with different issues.
 
-In general, using [Magisk and especially the features like Zygisk with Graphene are likely to have the risk of breaking things with every new release in future.](https://github.com/chenxiaolong/avbroot/issues/213#issuecomment-1986637884).
-
-Using the [fork of Magisk that supports Zygisk](https://github.com/pixincreate/Magisk) is recommended over official Magisk and KernelSU as the official Magisk is completely broken on GrapheneOS including `Zygisk` while getting KernelSU working on GrapheneOS is itself a tedious task as GrapheneOS enforces signature verification on Kernel and hence, building GrapheneOS with KernelSU from scratch is the only option if root is need.
-
-KernelSU does have some parts like `ksud`'s sources closed which makes it inappropriate for a tool that has so much influence on the device.
+This fork of PixeneOS uses AlphaMagisk as zygisk with the pixincreate magisk fork has issues with the denylist.
+Kitsune Magisk is also a good option but MagiskHide has been made basically useless if you read the AlphaMagisk telegram channel linked above.
 
 > [!NOTE]
 > For Magisk preinit, see [Magisk preinit](#magisk-preinit)
@@ -227,100 +218,6 @@ Magisk versions 25211 and newer require a writable partition for storing custom 
 
    If the device is unbootable, patch and flash the OTA once using `--ignore-magisk-warnings`, then repatch and reflash the OTA with `--magisk-preinit-device <name>`.
 
-### Updates
-
-Updates can be done by patching (or re-patching) the OTA using `adb sideload`:
-
-1. Reboot to recovery mode. If stuck at `No command`, press Volume up while holding Power button.
-2. Sideload the patched OTA with `adb sideload` by using volume buttons to toggle to `Apply update from ADB` which can be confirmed by pressing the power button
-
-PixeneOS leverages Custota:
-
-1. Disable the [system updater app](https://github.com/chenxiaolong/avbroot#ota-updates).
-2. Open Custota and set the OTA server URL to: `https://pixincreate.github.io/PixeneOS/<rootless/magisk>`
-
-For more info, refer to the [server](https://github.com/pixincreate/PixeneOS/tree/gh-pages) branch.
-
-## Tool Usage
-
-PixeneOS can be run on your local machine. A Linux based machine is preferred.
-
-1. Clone or fork the repository
-
-2. Modify `env.toml` to set environment variables (your device model, AVBRoot architecture, GrapheneOS update channel and etc.,)
-
-   > [!IMPORTANT]
-   > Make sure that `env.toml` file exist in root of the project.
-
-3. Run the program end-to-end:
-
-   ```shell
-   . src/main.sh
-   ```
-
-> [!NOTE]
-> Running the program end-to-end will only generate the patched OTA package locally and will not push it to the server (server branch that contains the json file which is read by the Custota).
-
-`INTERACTIVE_MODE`, by default is set to `true` that calls `check_toml_env` function to check the existence of `env.toml`. If the file exist, it will read the `env.toml` file and set the environment variables accordingly. If the `env.toml` is non-existent, ignored. If it exist, and the format is wrong, the script exits with an error.
-
-To make the patched OTA available to the device, it needs to be hosted on the server. PixeneOS uses GitHub for pushing updates, handled by [release.yml](.github/workflows/release.yml).
-
-To set up automated release, add the following variables in GitHub secrets:
-
-- `EMAIL`: Email address associated with the GitHub account.
-- Base64 encoded keys:
-  - `AVB_KEY`
-  - `CERT_OTA`
-  - `OTA_KEY`
-- Passphrases used to generate the keys:
-  - `PASSPHRASE_AVB`
-  - `PASSPHRASE_OTA`
-
-### Hop Between Root and Rootless
-
-- To remove root, set the following URL in Custota: `https://pixincreate.github.io/PixeneOS/rootless/`
-- To add root, set the following URL in Custota: `https://pixincreate.github.io/PixeneOS/magisk/`
-
-### Commands
-
-- To see the list of available commands:
-
-  ```shell
-  . src/util_functions.sh && help
-  ```
-
-  `help` command will display the help message.
-
-- To see the list of supported tools:
-
-  ```shell
-  . src/util_functions.sh && supported_tools
-  ```
-
-  `supported_tools` command will display the list of tools that are supported.
-
-- To generate AVB keys:
-
-  ```shell
-  . src/util_functions.sh && generate_keys
-  ```
-
-  This command will generate the AVB keys and store them in `.keys` directory.
-
-> [!WARNING]
-> For security reasons, `.keys` directory will **not** be pushed to your GitHub repository.> Execute `setup_hooks.sh` to install a pre-commit hook that will prevent `.keys` directory from being pushed.
-
-- To create and make the release:
-
-  ```shell
-  . src/util_functions.sh && create_and_make_release
-  ```
-
-- To call individual functions/commands:
-
-  ```shell
-  . src/<file>.sh && <function_name>
-  ```
 
 ## Reverting Back to Stock
 
@@ -369,6 +266,8 @@ Dependencies are downloaded from their respective repositories and are licensed 
   - [my-avbroot-setup](https://github.com/chenxiaolong/my-avbroot-setup)
   - [OEMUnlockOnBoot](https://github.com/chenxiaolong/OEMUnlockOnBoot)
 - [Rooted-Graphene](https://github.com/schnatterer/rooted-graphene) -- for motivation and inspiration
+- [PixeneOS](https://github.com/pixincreate/PixeneOS) -- original project
+- [AlphaMagisk](https://t.me/magiskalpha) -- AlphaMagisk
 
 ## Disclaimer
 
