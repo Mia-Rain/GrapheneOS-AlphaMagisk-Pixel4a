@@ -5,15 +5,8 @@ source src/declarations.sh
 # Fetch the latest version of GrapheneOS and Magisk and sets up the OTA URL
 function get_latest_version() {
   local latest_grapheneos_version=$(curl -sL "${GRAPHENEOS[OTA_BASE_URL]}/${DEVICE_NAME}-${GRAPHENEOS[UPDATE_CHANNEL]}" | sed 's/ .*//')
-  local latest_magisk_version=$(
-    git ls-remote --tags "${DOMAIN}/${MAGISK[REPOSITORY]}.git" |
-      awk -F'\t' '{print $2}' |
-      grep -E 'refs/tags/' |
-      sed 's/refs\/tags\///' |
-      sort -V |
-      tail -n1 |
-      sed 's/canary-//'
-  )
+  local latest_magisk_version=29001
+  # magisk alpha has no public repo so
 
   if [[ GRAPHENEOS[UPDATE_TYPE] == "install" ]]; then
     echo -e "The update type is set to \`install\` which is not supported by AVBRoot.\nExiting..."
