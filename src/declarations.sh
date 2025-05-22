@@ -37,7 +37,6 @@ VERSION[OEMUNLOCKONBOOT]="${VERSION[OEMUNLOCKONBOOT]:-1.1}"
 
 # Magisk
 MAGISK[PREINIT]="${MAGISK_PREINIT:-}"
-#MAGISK[REPOSITORY]="${USER}/Magisk"
 MAGISK[URL]="https://transcendent.ink/b1dc47a-alpha-29001-magisk.apk"
 
 # Keys
